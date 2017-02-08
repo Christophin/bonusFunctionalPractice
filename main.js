@@ -21,15 +21,10 @@ console.assert(total === 24);
 // that takes an array and a function
 // ----------------------------
 
-
-function reduce(array, callback) {
-    var reduced;
+function reduce(array, seed, callback) {
+    var reduced = seed;
     forEach(array, function(next) {
-      if (typeof reduced == "undefined" ) {
-        reduced = next;
-      } else {
       reduced = callback(reduced, next);
-      }
     });
     return reduced;
 }
@@ -37,7 +32,7 @@ function reduce(array, callback) {
 // tests
 // ---
 console.assert(
-        reduce([1, 2, 3, 4], function(a, v){ return a*v }) === 24
+        reduce([1, 2, 3, 4], 1, function(a, v){ return a*v }) === 24
 )
 
 // ----------------------------
@@ -45,13 +40,23 @@ console.assert(
 // that takes an array and a function
 // ----------------------------
 
-function map(array, callback){
-    var squared = [];
-    forEach(array, function(square) {
-      squared.push(callback(square))
-    });
-    return squared;
+function map(array, callback) {
+  return reduce(array, [], function(accumulator, element)  {
+    var newArray = accumulator;
+    newArray.push(callback(element))
+    return newArray
+  });
 }
+
+
+
+// function map(array, callback){
+//     var squared = [];
+//     forEach(array, function(square) {
+//       squared.push(callback(square))
+//     });
+//     return squared;
+// }
 
 // tests
 // ---
@@ -66,16 +71,25 @@ console.assert(squares[3] === 16)
 // that takes an array and a function
 // ----------------------------
 
-function filter(array, callback){
-    var filtered = [];
-    forEach(array, function(filterer) {
-      if(callback(filterer))  {
-        filtered.push(filterer);
-      }
-      console.log(filtered);
-    });
-    return filtered;
+function filter(array, tester)  {
+  return reduce(array, [], function(total, element) {
+    if (tester(element)) {
+      total.push(element);
+    }
+    return total;
+  })
 }
+
+// function filter(array, callback){
+//     var filtered = [];
+//     forEach(array, function(filterer) {
+//       if(callback(filterer))  {
+//         filtered.push(filterer);
+//       }
+//       console.log(filtered);
+//     });
+//     return filtered;
+// }
 
 // tests
 // ---
@@ -90,7 +104,7 @@ console.assert(evens[1] === 4)
 // ----------------------------
 
 function sum(){
-  return reduce(arguments, function(a, v) {
+  return reduce(arguments, 0, function(a, v) {
     return a + v;
   });
 }
@@ -145,7 +159,7 @@ var customers = [
 
 var results = customers;
     customers.filter(function(){
-      return 
+      return
     })
     .map(function(){
         // YOUR CODE HERE
